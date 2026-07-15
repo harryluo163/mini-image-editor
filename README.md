@@ -4,8 +4,7 @@ An Angular 17 mini image editor that layers the **Creaition** design system on t
 
 > **Live demo:** _<add your Vercel/Netlify URL here after deployment>_
 
-![screenshot placeholder — replace with real UI capture](./docs/screenshot-main.png)
-![screenshot placeholder — AI generation panel with history](./docs/screenshot-ai.png)
+![Creaition Mini Image Editor — AI generation panel with Chinese UI, style and palette pickers](./docs/screenshots/01-ai-panel.png)
 
 ## Features
 
@@ -181,11 +180,23 @@ it only knows about `/api/generate`.
 
 ## Screenshots
 
-Add real captures to `docs/`:
+### AI generation panel (Chinese UI)
 
-- `docs/screenshot-main.png` — full editor with canvas, toolbar and AI panel
-- `docs/screenshot-ai.png` — AI generation panel with history/favourites
-- `docs/screenshot-mobile.png` — mobile layout with the properties modal open
+The AI Studio with model / style / palette selectors and prompt input. The language toggle in the top-right switches the entire UI between English and Chinese at runtime.
+
+![AI generation panel with Chinese UI, style and palette pickers](./docs/screenshots/01-ai-panel.png)
+
+### Editor tools + history
+
+Shapes, freehand drawing, text overlay and the AI history tab all live side-by-side. Every generated image lands in the history panel and can be re-applied to the canvas with a single click.
+
+![Editor tools panel with shape settings, canvas annotations and AI history](./docs/screenshots/02-tools-history.png)
+
+### Filters + Qwen Image Edit
+
+Sepia and Sharpen filters composited onto the canvas, with the Qwen Image Edit model selected for prompt-driven refinement of the existing image.
+
+![Sepia-filtered apple on canvas with Qwen Image Edit model selected](./docs/screenshots/03-filter-effects.png)
 
 ## License
 

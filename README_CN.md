@@ -4,8 +4,7 @@
 
 > **在线演示：** _<部署后在此填写 Vercel/Netlify 地址>_
 
-![截图占位 — 替换为真实 UI 截图](./docs/screenshot-main.png)
-![截图占位 — AI 生成面板与历史记录](./docs/screenshot-ai.png)
+![Creaition 迷你图片编辑器 — 中文界面 AI 生成面板，含风格与色调选择器](./docs/screenshots/01-ai-panel.png)
 
 ## 功能特性
 
@@ -168,11 +167,23 @@ vercel --prod
 
 ## 截图
 
-将真实截图添加到 `docs/` 目录：
+### AI 生成面板（中文界面）
 
-- `docs/screenshot-main.png` — 完整编辑器含画布、工具栏和 AI 面板
-- `docs/screenshot-ai.png` — AI 生成面板含历史/收藏
-- `docs/screenshot-mobile.png` — 移动端布局，属性模态框打开状态
+AI 工作室包含模型 / 画面风格 / 色调选择器和提示词输入框。右上角语言切换按钮可在英文与中文之间实时切换整个界面。
+
+![AI 生成面板中文界面，含风格与色调选择器](./docs/screenshots/01-ai-panel.png)
+
+### 编辑工具 + 历史记录
+
+形状、自由绘制、文字叠加与 AI 历史记录标签同屏展示。每张生成的图片都会进入历史面板，点击即可重新应用到画布。
+
+![编辑工具面板含形状设置、画布标注与 AI 历史记录](./docs/screenshots/02-tools-history.png)
+
+### 滤镜 + Qwen Image Edit
+
+Sepia 与 Sharpen 滤镜叠加到画布上，右侧选中 Qwen Image Edit 模型对现有图像进行提示词驱动的二次编辑。
+
+![Sepia 滤镜苹果画布配合 Qwen Image Edit 模型](./docs/screenshots/03-filter-effects.png)
 
 ## 许可证
 
