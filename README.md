@@ -1,5 +1,7 @@
 # Creaition Mini Image Editor
 
+**English** | [中文](./README_CN.md)
+
 An Angular 17 mini image editor that layers the **Creaition** design system on top of Toast UI Image Editor, plus a full AI-generation studio wired to Hugging Face Inference (Stable Diffusion XL, SD 1.5, and Qwen Image Edit — swappable at runtime).
 
 > **Live demo:** _<add your Vercel/Netlify URL here after deployment>_

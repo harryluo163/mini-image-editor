@@ -1,5 +1,7 @@
 # Creaition 迷你图片编辑器
 
+[English](./README.md) | **中文**
+
 一个基于 Angular 17 的迷你图片编辑器，在 Toast UI Image Editor 之上集成了 **Creaition** 设计系统，并内置完整的 AI 图像生成工作室，接入 Hugging Face 推理 API（支持 Stable Diffusion XL、SD 1.5 和 Qwen Image Edit — 运行时可自由切换模型）。
 
 > **在线演示：** _<部署后在此填写 Vercel/Netlify 地址>_
