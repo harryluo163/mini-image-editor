@@ -1,0 +1,141 @@
+<div class="properties-panel" [class.properties-panel--mobile-visible]="isMobileVisible">
+  <!-- Mobile drag handle indicator -->
+  <div class="drag-handle" (click)="onClose()">
+    <div class="drag-handle__bar"></div>
+  </div>
+
+  <!-- Mobile close button (only shown when the panel is rendered as a bottom sheet) -->
+  <button
+    class="creaition-btn creaition-btn--icon close-btn"
+    (click)="onClose()"
+    aria-label="Close properties panel">
+    <span aria-hidden="true">✕</span>
+  </button>
+
+  <div class="properties-panel__content">
+    <!-- No tool selected -->
+    <div *ngIf="!activeTool" class="properties-panel__empty">
+      <p>{{ i18n.t('props.selectTool') }}</p>
+    </div>
+
+    <!-- Draw tool -->
+    <div *ngIf="activeTool === 'draw'" class="properties-panel__section">
+      <h3 class="properties-panel__title">{{ i18n.t('props.drawSettings') }}</h3>
+
+      <label class="properties-panel__label">{{ i18n.t('props.color') }}</label>
+      <div class="color-grid">
+        <button
+          *ngFor="let color of colors"
+          class="color-swatch"
+          [class.color-swatch--active]="drawColor === color"
+          [style.background-color]="color"
+          [attr.aria-label]="'Select color ' + color"
+          (click)="onColorSelect(color)">
+        </button>
+      </div>
+
+      <label class="properties-panel__label">{{ i18n.t('props.brushWidth') }}: {{ drawWidth }}px</label>
+      <input
+        type="range"
+        class="properties-panel__slider"
+        [(ngModel)]="drawWidth"
+        (ngModelChange)="onWidthChange()"
+        [min]="1"
+        [max]="20"
+        [step]="1">
+    </div>
+
+    <!-- Filter tool -->
+    <div *ngIf="activeTool === 'filter'" class="properties-panel__section">
+      <h3 class="properties-panel__title">{{ i18n.t('props.filters') }}</h3>
+      <div class="filter-grid">
+        <button
+          *ngFor="let filter of filters"
+          class="creaition-btn creaition-btn--small"
+          [class.creaition-btn--primary]="selectedFilter === filter.id"
+          (click)="onFilterSelect(filter.id)">
+          {{ filter.label }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Text tool -->
+    <div *ngIf="activeTool === 'text'" class="properties-panel__section">
+      <h3 class="properties-panel__title">{{ i18n.t('props.textSettings') }}</h3>
+      <p class="properties-panel__hint">{{ i18n.t('props.textHint') }}</p>
+
+      <label class="properties-panel__label">{{ i18n.t('props.color') }}</label>
+      <div class="color-grid">
+        <button
+          *ngFor="let color of colors"
+          class="color-swatch"
+          [class.color-swatch--active]="drawColor === color"
+          [style.background-color]="color"
+          [attr.aria-label]="'Select color ' + color"
+          (click)="onColorSelect(color)">
+        </button>
+      </div>
+    </div>
+
+    <!-- Shape tool -->
+    <div *ngIf="activeTool === 'shape'" class="properties-panel__section">
+      <h3 class="properties-panel__title">{{ i18n.t('props.shapeSettings') }}</h3>
+      <p class="properties-panel__hint">{{ i18n.t('props.shapeHint') }}</p>
+
+      <label class="properties-panel__label">{{ i18n.t('props.shape') }}</label>
+      <div class="properties-panel__button-row">
+        <button
+          *ngFor="let shape of shapes"
+          class="creaition-btn creaition-btn--small"
+          [class.creaition-btn--primary]="selectedShape === shape.id"
+          (click)="onShapeSelect(shape.id)"
+          [attr.aria-label]="'Select ' + shape.label">
+          <span aria-hidden="true">{{ shape.icon }}</span>
+          <span>{{ shape.label }}</span>
+        </button>
+      </div>
+
+      <label class="properties-panel__label">{{ i18n.t('props.color') }}</label>
+      <div class="color-grid">
+        <button
+          *ngFor="let color of colors"
+          class="color-swatch"
+          [class.color-swatch--active]="drawColor === color"
+          [style.background-color]="color"
+          [attr.aria-label]="'Select color ' + color"
+          (click)="onColorSelect(color)">
+        </button>
+      </div>
+
+      <label class="properties-panel__label">{{ i18n.t('props.strokeWidth') }}: {{ drawWidth }}px</label>
+      <input
+        type="range"
+        class="properties-panel__slider"
+        [(ngModel)]="drawWidth"
+        (ngModelChange)="onWidthChange()"
+        [min]="1"
+        [max]="20"
+        [step]="1">
+    </div>
+
+    <!-- Crop tool with explicit apply/cancel -->
+    <div *ngIf="activeTool === 'crop'" class="properties-panel__section">
+      <h3 class="properties-panel__title">{{ i18n.t('props.crop') }}</h3>
+      <p class="properties-panel__hint">{{ i18n.t('props.cropHint') }}</p>
+      <div class="properties-panel__button-row">
+        <button class="creaition-btn creaition-btn--primary" (click)="onApplyCrop()">{{ i18n.t('props.applyCrop') }}</button>
+        <button class="creaition-btn" (click)="onCancelCrop()">{{ i18n.t('props.cancel') }}</button>
+      </div>
+    </div>
+
+    <!-- Rotate tool: allow both directions -->
+    <div *ngIf="activeTool === 'rotate'" class="properties-panel__section">
+      <h3 class="properties-panel__title">{{ i18n.t('props.rotate') }}</h3>
+      <p class="properties-panel__hint">{{ i18n.t('props.rotateHint') }}</p>
+      <div class="properties-panel__button-row">
+        <button class="creaition-btn" (click)="onRotate(-90)">{{ i18n.t('props.rotateLeft') }}</button>
+        <button class="creaition-btn" (click)="onRotate(90)">{{ i18n.t('props.rotateRight') }}</button>
+      </div>
+    </div>
+  </div>
+</div>

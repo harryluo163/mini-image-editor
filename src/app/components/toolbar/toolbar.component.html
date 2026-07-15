@@ -1,0 +1,78 @@
+<div class="toolbar">
+  <!-- Mobile menu toggle -->
+  <button class="creaition-btn creaition-btn--icon mobile-toggle" (click)="toggleMobileMenu()">
+    <span>{{ isMobileMenuOpen ? '✕' : '☰' }}</span>
+  </button>
+
+  <!-- Mobile quick actions: horizontally scrollable for fast access -->
+  <div class="mobile-quick-actions">
+    <button class="creaition-btn creaition-btn--small" (click)="onUndo()" [title]="i18n.t('toolbar.undo')">
+      <span class="tool-icon">↩️</span>
+    </button>
+    <button class="creaition-btn creaition-btn--small" (click)="onRedo()" [title]="i18n.t('toolbar.redo')">
+      <span class="tool-icon">↪️</span>
+    </button>
+    <button class="creaition-btn creaition-btn--small" (click)="onImport()" [title]="i18n.t('toolbar.import')">
+      <span class="tool-icon">📂</span>
+    </button>
+    <button class="creaition-btn creaition-btn--small creaition-btn--primary" (click)="onExport()" [title]="i18n.t('toolbar.export')">
+      <span class="tool-icon">💾</span>
+    </button>
+  </div>
+
+  <!-- Tools section (full menu, animated on mobile) -->
+  <div class="toolbar__tools" [class.toolbar__tools--open]="isMobileMenuOpen">
+    <div class="toolbar__section">
+      <span class="toolbar__label">{{ i18n.t('toolbar.tools') }}</span>
+      <div class="toolbar__buttons">
+        <button
+          *ngFor="let tool of tools"
+          class="creaition-btn"
+          [class.creaition-btn--primary]="activeTool === tool.id"
+          (click)="selectTool(tool.id)"
+          [title]="tool.label">
+          <span class="tool-icon">{{ tool.icon }}</span>
+          <span class="tool-label">{{ tool.label }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="toolbar__divider"></div>
+
+    <!-- Actions section -->
+    <div class="toolbar__section">
+      <span class="toolbar__label">{{ i18n.t('toolbar.actions') }}</span>
+      <div class="toolbar__buttons">
+        <button class="creaition-btn" (click)="onUndo()" [title]="i18n.t('toolbar.undo')">
+          <span class="tool-icon">↩️</span>
+          <span class="tool-label">{{ i18n.t('toolbar.undo') }}</span>
+        </button>
+        <button class="creaition-btn" (click)="onRedo()" [title]="i18n.t('toolbar.redo')">
+          <span class="tool-icon">↪️</span>
+          <span class="tool-label">{{ i18n.t('toolbar.redo') }}</span>
+        </button>
+        <button class="creaition-btn" (click)="onClear()" [title]="i18n.t('toolbar.clear')">
+          <span class="tool-icon">🗑️</span>
+          <span class="tool-label">{{ i18n.t('toolbar.clear') }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="toolbar__divider"></div>
+
+    <!-- File section -->
+    <div class="toolbar__section">
+      <span class="toolbar__label">{{ i18n.t('toolbar.file') }}</span>
+      <div class="toolbar__buttons">
+        <button class="creaition-btn" (click)="onImport()" [title]="i18n.t('toolbar.import')">
+          <span class="tool-icon">📂</span>
+          <span class="tool-label">{{ i18n.t('toolbar.import') }}</span>
+        </button>
+        <button class="creaition-btn creaition-btn--primary" (click)="onExport()" [title]="i18n.t('toolbar.export')">
+          <span class="tool-icon">💾</span>
+          <span class="tool-label">{{ i18n.t('toolbar.export') }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

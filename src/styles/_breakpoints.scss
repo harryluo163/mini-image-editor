@@ -1,0 +1,11 @@
+// -----------------------------------------------------------------------
+// Design-system breakpoints — kept in their own partial so component-scoped
+// SCSS files can import just the variables without dragging in the entire
+// theme (which would bloat every component's stylesheet past the Angular
+// per-component budget).
+// -----------------------------------------------------------------------
+
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;

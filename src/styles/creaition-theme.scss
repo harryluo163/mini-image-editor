@@ -1,0 +1,295 @@
+// Creaition Design System Theme
+// ================================
+//
+// Typography note: the Creaition brand font is "strokeWeight(var)" — a
+// proprietary variable font with wght + slnt axes. For this open build we
+// substitute Google Fonts "Recursive" (loaded via <link> in index.html) which
+// exposes the same axes, and keep the brand name at the head of the
+// font-family fallback chain to preserve intent.
+
+// Breakpoint variables now live in their own partial so per-component
+// stylesheets can pull them in without inlining the full theme file.
+@import 'breakpoints';
+
+:root {
+  // Colors
+  --creaition-primary-grey: #efefee;
+  --creaition-secondary-grey: #bebebe;
+  --creaition-background: #f0f0f0;
+  --creaition-white: #ffffff;
+  --creaition-black: #000000;
+  --creaition-text: #000000;
+
+  // Typography — Recursive is aliased above; Eina03-Regular kept as brand fallback
+  --creaition-font-primary: 'strokeWeight(var)', 'Recursive', 'Eina03-Regular', system-ui, sans-serif;
+  --creaition-font-secondary: 'Eina03-Regular', system-ui, sans-serif;
+
+  // Font Weights (font-variation-settings 'wght' axis)
+  // Design spec tokens are 60/80/120; mapped to Recursive's valid range (300-1000).
+  --creaition-weight-normal: 400;    // spec token: 60
+  --creaition-weight-medium: 500;    // spec token: 80
+  --creaition-weight-semibold: 700;  // spec token: 120
+
+  // Font Slant ('slnt' axis) — Recursive uses negative degrees for italic (-15..0)
+  --creaition-slant-normal: 0;
+  --creaition-slant-hover: -12;      // spec token: 12 (visually italic on hover)
+
+  // Border Radius
+  --creaition-radius-button: 50px;
+  --creaition-radius-input: 0px;
+  --creaition-radius-card: 1rem;
+
+  // Sizing
+  --creaition-button-height: 35px;
+  --creaition-input-height: 50px;
+
+  // Transitions
+  --creaition-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Base Typography
+body {
+  font-family: var(--creaition-font-primary);
+  font-variation-settings: 'wght' var(--creaition-weight-normal), 'slnt' var(--creaition-slant-normal);
+  // Recursive is a variable font — opt into optical sizing + subpixel AA so
+  // the letterforms stay crisp at UI sizes on both HiDPI and non-HiDPI screens.
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: 0.01em;
+  color: var(--creaition-text);
+  background-color: var(--creaition-background);
+  margin: 0;
+  padding: 0;
+}
+
+// Button Styles
+.creaition-btn {
+  font-family: var(--creaition-font-primary);
+  font-variation-settings: 'wght' var(--creaition-weight-medium), 'slnt' var(--creaition-slant-normal);
+  font-optical-sizing: auto;
+  height: var(--creaition-button-height);
+  min-height: var(--creaition-button-height);
+  border-radius: var(--creaition-radius-button);
+  border: 1px solid var(--creaition-black);
+  background-color: var(--creaition-white);
+  color: var(--creaition-black);
+  padding: 0 18px;
+  cursor: pointer;
+  transition: var(--creaition-transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover:not(:disabled) {
+    font-variation-settings: 'wght' var(--creaition-weight-medium), 'slnt' var(--creaition-slant-hover);
+    background-color: var(--creaition-black);
+    color: var(--creaition-white);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &--primary {
+    background-color: var(--creaition-black);
+    color: var(--creaition-white);
+    border-color: var(--creaition-black);
+    font-variation-settings: 'wght' var(--creaition-weight-semibold), 'slnt' var(--creaition-slant-normal);
+
+    &:hover:not(:disabled) {
+      background-color: var(--creaition-white);
+      color: var(--creaition-black);
+    }
+  }
+
+  &--icon {
+    width: var(--creaition-button-height);
+    padding: 0;
+    border-radius: 50%;
+    gap: 0;
+  }
+
+  &--small {
+    height: 30px;
+    min-height: 30px;
+    font-size: 12px;
+    padding: 0 14px;
+    gap: 6px;
+  }
+
+  // Full-width variant for tidy vertical stacks (sidebars, panels). Keeps the
+  // icon in a fixed-width slot on the left so labels line up perfectly.
+  &--block {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0 16px;
+    gap: 12px;
+  }
+}
+
+// Input Styles
+.creaition-input {
+  font-family: var(--creaition-font-primary);
+  font-variation-settings: 'wght' var(--creaition-weight-normal), 'slnt' var(--creaition-slant-normal);
+  height: var(--creaition-input-height);
+  border-radius: var(--creaition-radius-input);
+  border: 1px solid var(--creaition-secondary-grey);
+  background-color: var(--creaition-white);
+  color: var(--creaition-text);
+  padding: 0 16px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: var(--creaition-transition);
+
+  &:focus {
+    outline: none;
+    border-color: var(--creaition-black);
+  }
+
+  &::placeholder {
+    color: var(--creaition-secondary-grey);
+  }
+}
+
+// Card Styles
+.creaition-card {
+  background-color: var(--creaition-white);
+  border-radius: var(--creaition-radius-card);
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: var(--creaition-transition);
+}
+
+// Text Utilities
+.text-semibold {
+  font-variation-settings: 'wght' var(--creaition-weight-semibold), 'slnt' var(--creaition-slant-normal);
+}
+
+.text-medium {
+  font-variation-settings: 'wght' var(--creaition-weight-medium), 'slnt' var(--creaition-slant-normal);
+}
+
+// Scrollbar Styling
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--creaition-primary-grey);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--creaition-secondary-grey);
+  border-radius: 3px;
+}
+
+// Angular Material Overrides
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button {
+  font-family: var(--creaition-font-primary) !important;
+  border-radius: var(--creaition-radius-button) !important;
+}
+
+.mat-mdc-form-field {
+  font-family: var(--creaition-font-primary) !important;
+}
+
+.mat-mdc-snack-bar-container {
+  border-radius: var(--creaition-radius-card) !important;
+}
+
+// ── Mobile Touch Targets ─────────────────────────────────────────────────────
+// Ensure all interactive elements meet the 44×44px minimum touch target.
+@media (max-width: 768px) {
+  .creaition-btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 16px;
+    font-size: 14px;
+
+    &--small {
+      min-height: 36px;
+      min-width: 36px;
+      font-size: 13px;
+      padding: 0 12px;
+    }
+
+    &--icon {
+      width: 44px;
+      height: 44px;
+    }
+  }
+
+  .creaition-input {
+    height: 48px;
+    padding: 0 14px;
+  }
+}
+
+// Active state for touch feedback (replaces hover on touch devices)
+@media (hover: none) and (pointer: coarse) {
+  .creaition-btn {
+    &:hover:not(:disabled) {
+      font-variation-settings: 'wght' var(--creaition-weight-medium), 'slnt' var(--creaition-slant-normal);
+      background-color: var(--creaition-white);
+      color: var(--creaition-black);
+      box-shadow: none;
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.95);
+      background-color: var(--creaition-black);
+      color: var(--creaition-white);
+      transition-duration: 0.1s;
+    }
+
+    &--primary {
+      &:hover:not(:disabled) {
+        background-color: var(--creaition-black);
+        color: var(--creaition-white);
+      }
+
+      &:active:not(:disabled) {
+        background-color: var(--creaition-white);
+        color: var(--creaition-black);
+      }
+    }
+  }
+}
+
+// Loading Animation
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--creaition-primary-grey) 25%, var(--creaition-secondary-grey) 50%, var(--creaition-primary-grey) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}

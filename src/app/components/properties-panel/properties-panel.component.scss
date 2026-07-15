@@ -1,0 +1,203 @@
+@import '../../../styles/breakpoints';
+
+:host {
+  display: block;
+}
+
+.properties-panel {
+  background-color: var(--creaition-white);
+  border-radius: var(--creaition-radius-card);
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+
+  // Mobile: full-screen modal below the header. Slides up from the bottom of
+  // the viewport into place; the parent-provided --mobile-visible class
+  // determines whether it's on-screen.
+  @media (max-width: $breakpoint-md) {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto;
+    max-height: 70vh;
+    z-index: 100;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.18);
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 12px 16px calc(20px + env(safe-area-inset-bottom));
+    -webkit-overflow-scrolling: touch;
+
+    &--mobile-visible {
+      transform: translateY(0);
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-variation-settings: 'wght' var(--creaition-weight-semibold), 'slnt' 0;
+    letter-spacing: 0.01em;
+    margin: 0;
+
+    @media (min-width: $breakpoint-sm) {
+      font-size: 15px;
+    }
+  }
+
+  &__label {
+    font-size: 12px;
+    color: var(--creaition-secondary-grey);
+    font-variation-settings: 'wght' var(--creaition-weight-medium), 'slnt' 0;
+    letter-spacing: 0.02em;
+  }
+
+  &__hint {
+    font-size: 12px;
+    color: var(--creaition-secondary-grey);
+    margin: 0;
+    // Use the variable font's slant axis for italic emphasis instead of
+    // `font-style: italic` — stays on-axis with the Creaition brand tokens.
+    font-variation-settings: 'wght' var(--creaition-weight-normal), 'slnt' var(--creaition-slant-hover);
+  }
+
+  &__slider {
+    width: 100%;
+    accent-color: var(--creaition-black);
+    // Larger touch target for range sliders on mobile
+    @media (max-width: $breakpoint-md) {
+      height: 32px;
+    }
+  }
+
+  &__button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    // Equal-width pair for Apply/Cancel and Rotate L/R — keeps side-by-side
+    // action buttons visually balanced instead of hugging their content.
+    .creaition-btn {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 20px 0;
+    color: var(--creaition-secondary-grey);
+    font-size: 13px;
+  }
+}
+
+// Drag handle: visible only on mobile as a swipe-down affordance
+.drag-handle {
+  display: none;
+
+  @media (max-width: $breakpoint-md) {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0 12px;
+    cursor: grab;
+
+    &__bar {
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--creaition-secondary-grey);
+      opacity: 0.6;
+    }
+  }
+}
+
+.close-btn {
+  display: none;
+
+  @media (max-width: $breakpoint-md) {
+    display: flex;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
+  }
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+
+  @media (max-width: $breakpoint-md) {
+    // Larger swatches on touch for easier tapping
+    gap: 10px;
+  }
+
+  @media (min-width: $breakpoint-sm) {
+    grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+  }
+}
+
+.color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: var(--creaition-transition);
+
+  @media (max-width: $breakpoint-md) {
+    width: 36px;
+    height: 36px;
+  }
+
+  &--active {
+    border-color: var(--creaition-black);
+    transform: scale(1.15);
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  // On touch devices, use active instead of hover
+  @media (hover: none) {
+    &:hover {
+      transform: none;
+    }
+    &:active {
+      transform: scale(1.15);
+    }
+  }
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+
+  @media (min-width: $breakpoint-sm) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  // Filter chips share the same width so the grid reads as a tidy matrix.
+  .creaition-btn {
+    width: 100%;
+    padding: 0 10px;
+  }
+}

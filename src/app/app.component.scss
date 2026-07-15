@@ -1,0 +1,200 @@
+@import '../styles/breakpoints';
+
+:host {
+  display: block;
+  height: 100vh;
+  height: 100dvh; // dynamic viewport height for mobile browsers
+  overflow: hidden;
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  background-color: var(--creaition-background);
+}
+
+// ---- Header ---------------------------------------------------------------
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  padding-top: calc(12px + env(safe-area-inset-top));
+  background-color: var(--creaition-white);
+  border-bottom: 1px solid var(--creaition-primary-grey);
+  height: calc(56px + env(safe-area-inset-top));
+  flex-shrink: 0;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: 10px 12px;
+    padding-top: calc(10px + env(safe-area-inset-top));
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__title {
+    font-size: 18px;
+    font-variation-settings: 'wght' var(--creaition-weight-semibold), 'slnt' 0;
+    margin: 0;
+
+    @media (max-width: $breakpoint-sm) {
+      font-size: 15px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+  }
+}
+
+// ---- Main grid ------------------------------------------------------------
+.app-main {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  height: calc(100vh - 56px);
+  height: calc(100dvh - 56px - env(safe-area-inset-top));
+  overflow: hidden;
+}
+
+// ---- Backdrop overlay (mobile) ---------------------------------------------
+.app-backdrop {
+  display: none;
+
+  @media (max-width: $breakpoint-md) {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 9;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+
+    &--visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}
+
+// ---- Sidebars -------------------------------------------------------------
+.app-sidebar {
+  position: absolute;
+  z-index: 10;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &--left {
+    top: 8px;
+    left: 8px;
+    width: 180px;
+    max-height: calc(100% - 16px);
+    background: var(--creaition-white);
+    border-radius: var(--creaition-radius-card);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    padding: 8px;
+
+    @media (max-width: $breakpoint-xl) {
+      width: 164px;
+    }
+    @media (max-width: $breakpoint-lg) {
+      width: 148px;
+    }
+    @media (max-width: $breakpoint-md) {
+      width: auto;
+      top: auto;
+      bottom: 12px;
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      left: 12px;
+      right: 12px;
+      max-height: 50vh;
+      border-radius: var(--creaition-radius-card);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  &--right {
+    top: 8px;
+    right: 8px;
+    width: 296px;
+    max-height: calc(100% - 16px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--creaition-white);
+    border-radius: var(--creaition-radius-card);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    padding: 12px;
+    transform: translateX(calc(100% + 24px));
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    @media (max-width: $breakpoint-xl) {
+      width: 264px;
+    }
+    @media (max-width: $breakpoint-lg) {
+      width: 240px;
+    }
+    @media (max-width: $breakpoint-md) {
+      width: 100%;
+      max-width: 380px;
+      top: 0;
+      right: 0;
+      max-height: 100%;
+      border-radius: 0;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+
+      @media (max-width: $breakpoint-sm) {
+        max-width: 100%;
+      }
+    }
+  }
+
+  // Modifier to reveal the right sidebar (drives the AI panel visibility).
+  // Sits at the `.app-sidebar` level so it compiles to `.app-sidebar--ai-visible`
+  // matching the Angular class binding in the template.
+  &--ai-visible {
+    transform: translateX(0);
+  }
+}
+
+// ---- Canvas area ----------------------------------------------------------
+.app-canvas {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  // The left sidebar is `position: absolute` (see `.app-sidebar--left`) so
+  // that it can float as a card over the workspace. Without any reservation
+  // here the canvas fills the full width and TUI renders the image beneath
+  // the toolbar — reserve space that matches the toolbar's `left + width +
+  // gap` so the image area starts to the right of it. Values track the
+  // toolbar's responsive widths (180 / 164 / 148 px). Global `box-sizing:
+  // border-box` (see styles.scss) means padding shrinks the content box, so
+  // `container.offsetWidth` inside image-editor picks up the new size and
+  // TUI re-fits the canvas on the next resize tick.
+  padding: 8px 8px 8px 196px;
+  // Pinch-to-zoom canvas on touch devices
+  touch-action: manipulation;
+
+  @media (max-width: $breakpoint-xl) {
+    padding-left: 180px; // 8 + 164 (sidebar) + 8
+  }
+  @media (max-width: $breakpoint-lg) {
+    padding-left: 164px; // 8 + 148 (sidebar) + 8
+  }
+  @media (max-width: $breakpoint-md) {
+    // Mobile: toolbar is a bottom sheet, canvas can go full-bleed.
+    padding: 0;
+  }
+}

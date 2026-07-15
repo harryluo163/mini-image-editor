@@ -1,0 +1,240 @@
+<div class="ai-panel">
+  <div class="ai-panel__header">
+    <h2 class="ai-panel__title">{{ i18n.t('ai.title') }}</h2>
+
+    <!-- Model selector -->
+    <label class="ai-panel__model-select">
+      <span class="ai-panel__model-label">{{ i18n.t('ai.model') }}</span>
+      <select
+        class="creaition-input model-select-input"
+        [ngModel]="selectedModel.id"
+        (ngModelChange)="onModelChange($event)">
+        <option *ngFor="let m of models" [value]="m.id">{{ m.name }}</option>
+      </select>
+    </label>
+    <p class="ai-panel__model-hint">{{ selectedModel.description }}</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="ai-panel__tabs">
+    <button
+      class="creaition-btn creaition-btn--small"
+      [class.creaition-btn--primary]="activeTab === 'generate'"
+      (click)="activeTab = 'generate'">
+      {{ i18n.t('ai.generate') }}
+    </button>
+    <button
+      class="creaition-btn creaition-btn--small"
+      [class.creaition-btn--primary]="activeTab === 'history'"
+      (click)="activeTab = 'history'">
+      {{ i18n.t('ai.history') }} ({{ generatedImages.length }})
+    </button>
+    <button
+      class="creaition-btn creaition-btn--small"
+      [class.creaition-btn--primary]="activeTab === 'favorites'"
+      (click)="activeTab = 'favorites'">
+      {{ i18n.t('ai.favorites') }} ({{ favoriteImages.length }})
+    </button>
+  </div>
+
+  <!-- Generate Tab -->
+  <div *ngIf="activeTab === 'generate'" class="ai-panel__content">
+    <!-- Image Style Selector -->
+    <div class="style-section">
+      <div class="style-selector" (click)="toggleStylePanel()">
+        <span class="style-selector__label">{{ i18n.t('ai.style') }}</span>
+        <span class="style-selector__value">{{ selectedStyleName }}</span>
+        <span class="style-selector__arrow">{{ showStylePanel ? '▲' : '▼' }}</span>
+      </div>
+
+      <div *ngIf="showStylePanel" class="style-panel">
+        <!-- Style category tabs -->
+        <div class="style-panel__tabs">
+          <button
+            *ngFor="let cat of styleCategories"
+            class="style-panel__tab"
+            [class.style-panel__tab--active]="activeStyleCategory.id === cat.id"
+            (click)="onStyleCategoryChange(cat)">
+            {{ i18n.currentLang === 'zh' ? cat.nameZh : cat.name }}
+          </button>
+        </div>
+
+        <!-- Style preset grid -->
+        <div class="style-panel__grid">
+          <div
+            *ngFor="let preset of activeStyleCategory.presets"
+            class="style-card"
+            [class.style-card--active]="selectedStyle.id === preset.id"
+            (click)="selectStyle(preset)">
+            <div class="style-card__thumb" [style.background]="preset.thumbnail"></div>
+            <div class="style-card__info">
+              <span class="style-card__name">{{ i18n.currentLang === 'zh' ? preset.nameZh : preset.name }}</span>
+              <span *ngIf="preset.isPro" class="style-card__pro">Pro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-section">
+      <label class="ai-panel__label">{{ i18n.t('ai.prompt') }}</label>
+      <div class="prompt-wrapper">
+        <textarea
+          class="creaition-input prompt-input"
+          [(ngModel)]="prompt"
+          (input)="onPromptInput()"
+          (focus)="showSuggestions = suggestions.length > 0"
+          (blur)="showSuggestions = false"
+          [placeholder]="i18n.t('ai.promptPlaceholder')"
+          rows="3"></textarea>
+
+        <!-- ✨ Enhance-prompt shortcut (SenseNova). Sits inside the textarea's
+             padded right-bottom so it never covers user text. -->
+        <button
+          type="button"
+          class="prompt-enhance-btn"
+          [class.prompt-enhance-btn--busy]="enhancing"
+          [disabled]="enhancing || !prompt.trim()"
+          [attr.title]="enhancing ? i18n.t('ai.enhancing') : i18n.t('ai.enhanceHint')"
+          [attr.aria-label]="enhancing ? i18n.t('ai.enhancing') : i18n.t('ai.enhanceHint')"
+          (click)="enhancePromptWithAi()">
+          <span class="prompt-enhance-btn__icon">{{ enhancing ? '⟳' : '✨' }}</span>
+        </button>
+
+        <div *ngIf="showSuggestions" class="suggestions-dropdown">
+          <button
+            *ngFor="let suggestion of suggestions"
+            class="suggestion-item"
+            (mousedown)="selectSuggestion(suggestion)">
+            {{ suggestion }}
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="enhanceError" class="enhance-error">
+        <span>{{ enhanceError }}</span>
+        <button type="button" class="enhance-error__dismiss" (click)="dismissEnhanceError()" aria-label="Dismiss">×</button>
+      </div>
+    </div>
+
+    <!-- Advanced settings -->
+    <button class="creaition-btn creaition-btn--small" (click)="showAdvanced = !showAdvanced">
+      {{ showAdvanced ? i18n.t('ai.hideAdvanced') : i18n.t('ai.showAdvanced') }}
+    </button>
+
+    <div *ngIf="showAdvanced" class="advanced-settings">
+      <div class="setting-row" *ngIf="selectedModel.supportsNegativePrompt">
+        <label class="ai-panel__label">{{ i18n.t('ai.negativePrompt') }}</label>
+        <input
+          class="creaition-input"
+          [(ngModel)]="negativePrompt"
+          [placeholder]="i18n.t('ai.negativePromptPlaceholder')">
+      </div>
+
+      <div class="setting-row">
+        <label class="ai-panel__label">{{ i18n.t('ai.size') }}: {{ width }}x{{ height }}</label>
+        <div class="size-buttons">
+          <button class="creaition-btn creaition-btn--small" [class.creaition-btn--primary]="width === 512 && height === 512" (click)="width = 512; height = 512">512x512</button>
+          <button class="creaition-btn creaition-btn--small" [class.creaition-btn--primary]="width === 768 && height === 768" [disabled]="selectedModel.maxWidth < 768" (click)="width = 768; height = 768">768x768</button>
+          <button class="creaition-btn creaition-btn--small" [class.creaition-btn--primary]="width === 1024 && height === 1024" [disabled]="selectedModel.maxWidth < 1024" (click)="width = 1024; height = 1024">1024x1024</button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <label class="ai-panel__label">{{ i18n.t('ai.steps') }}: {{ steps }}</label>
+        <input type="range" [(ngModel)]="steps" [min]="10" [max]="50" [step]="5" class="ai-panel__slider">
+      </div>
+
+      <div class="setting-row">
+        <label class="ai-panel__label">{{ i18n.t('ai.guidance') }}: {{ guidance }}</label>
+        <input type="range" [(ngModel)]="guidance" [min]="1" [max]="20" [step]="0.5" class="ai-panel__slider">
+      </div>
+    </div>
+
+    <!-- Generate Button -->
+    <button
+      class="creaition-btn creaition-btn--primary generate-btn"
+      [disabled]="!canGenerate"
+      (click)="generate()">
+      <span *ngIf="!isLoading">{{ i18n.t('ai.generateImage') }}</span>
+      <span *ngIf="isLoading">{{ i18n.t('ai.generating') }}...</span>
+    </button>
+
+    <!-- Hint shown when an edit-only model is picked without a canvas image.
+         Prevents the confusing 400 ("requires image upload") from ModelScope
+         and offers a one-click Upload path so the user doesn't have to hunt
+         for the Toolbar's Import button. -->
+    <div *ngIf="needsCanvasImage" class="needs-canvas-hint">
+      <span class="needs-canvas-hint__text">
+        ✏️ {{ selectedModel.name }} {{ i18n.t('ai.needsCanvasHint') }}
+      </span>
+      <button
+        type="button"
+        class="creaition-btn creaition-btn--small needs-canvas-hint__upload"
+        (click)="uploadSourceImage()">
+        {{ i18n.t('ai.uploadImage') }}
+      </button>
+      <input
+        #sourceUploadInput
+        type="file"
+        accept="image/*"
+        hidden
+        (change)="onSourceUploadChange($event)">
+    </div>
+
+    <!-- Progress Bar -->
+    <div *ngIf="isLoading" class="progress-bar">
+      <div class="progress-bar__fill" [style.width.%]="progress"></div>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="error" class="error-message">
+      <span>{{ error }}</span>
+      <button class="creaition-btn creaition-btn--small" (click)="dismissError()">{{ i18n.t('ai.dismiss') }}</button>
+    </div>
+  </div>
+
+  <!-- History Tab -->
+  <div *ngIf="activeTab === 'history'" class="ai-panel__content">
+    <div *ngIf="generatedImages.length === 0" class="empty-state">
+      <p>{{ i18n.t('ai.noImages') }}</p>
+    </div>
+
+    <div *ngIf="generatedImages.length > 0" class="image-grid">
+      <div *ngFor="let image of generatedImages" class="image-card">
+        <img [src]="image.imageData" [alt]="image.prompt" class="image-card__img">
+        <div class="image-card__overlay">
+          <button class="creaition-btn creaition-btn--small" (click)="useImage(image)">{{ i18n.t('ai.use') }}</button>
+          <button class="creaition-btn creaition-btn--icon creaition-btn--small" (click)="toggleFavorite(image)">
+            {{ image.isFavorite ? '★' : '☆' }}
+          </button>
+          <button class="creaition-btn creaition-btn--icon creaition-btn--small" (click)="deleteImage(image)">🗑️</button>
+        </div>
+        <p class="image-card__prompt">{{ image.prompt }}</p>
+        <span class="image-card__model">{{ modelName(image.modelId) }}</span>
+      </div>
+    </div>
+
+    <button *ngIf="generatedImages.length > 0" class="creaition-btn creaition-btn--small" (click)="clearHistory()">
+      {{ i18n.t('ai.clearAll') }}
+    </button>
+  </div>
+
+  <!-- Favorites Tab -->
+  <div *ngIf="activeTab === 'favorites'" class="ai-panel__content">
+    <div *ngIf="favoriteImages.length === 0" class="empty-state">
+      <p>{{ i18n.t('ai.noFavorites') }}</p>
+    </div>
+
+    <div *ngIf="favoriteImages.length > 0" class="image-grid">
+      <div *ngFor="let image of favoriteImages" class="image-card">
+        <img [src]="image.imageData" [alt]="image.prompt" class="image-card__img">
+        <div class="image-card__overlay">
+          <button class="creaition-btn creaition-btn--small" (click)="useImage(image)">{{ i18n.t('ai.use') }}</button>
+          <button class="creaition-btn creaition-btn--icon creaition-btn--small" (click)="toggleFavorite(image)">★</button>
+        </div>
+        <p class="image-card__prompt">{{ image.prompt }}</p>
+      </div>
+    </div>
+  </div>
+</div>

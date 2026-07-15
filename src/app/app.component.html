@@ -1,0 +1,80 @@
+<div class="app-layout">
+  <!-- Global header -->
+  <header class="app-header">
+    <div class="app-header__brand">
+      <h1 class="app-header__title">{{ i18n.t('app.title') }}</h1>
+    </div>
+    <div class="app-header__actions">
+      <button
+        class="creaition-btn creaition-btn--small"
+        (click)="i18n.toggleLanguage()"
+        [title]="i18n.currentLang === 'en' ? '切换到中文' : 'Switch to English'">
+        <span>{{ i18n.currentLang === 'en' ? '中文' : 'EN' }}</span>
+      </button>
+      <button
+        class="creaition-btn"
+        [class.creaition-btn--primary]="showAiPanel"
+        (click)="toggleAiPanel()"
+        aria-label="Toggle AI generation panel">
+        <span>{{ i18n.t('app.ai') }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main working area -->
+  <main class="app-main">
+    <!-- Mobile backdrop overlay: closes panels when tapped -->
+    <div
+      class="app-backdrop"
+      [class.app-backdrop--visible]="isMobile && (showAiPanel || showPropertiesPanel)"
+      (click)="onBackdropClick()"></div>
+
+    <!-- Left sidebar: Toolbar -->
+    <aside class="app-sidebar app-sidebar--left">
+      <app-toolbar
+        [activeTool]="activeTool"
+        (toolSelected)="onToolSelected($event)"
+        (undoClicked)="onUndo()"
+        (redoClicked)="onRedo()"
+        (clearClicked)="onClear()"
+        (exportClicked)="onExport()"
+        (importClicked)="onImport()">
+      </app-toolbar>
+    </aside>
+
+    <!-- Center: Canvas -->
+    <section class="app-canvas">
+      <app-image-editor
+        [isGenerating]="isGenerating"
+        (cancelGeneration)="onCancelGeneration()">
+      </app-image-editor>
+    </section>
+
+    <!-- Right sidebar: Properties (contextual) + AI panel -->
+    <aside class="app-sidebar app-sidebar--right" [class.app-sidebar--ai-visible]="showAiPanel">
+      <!-- Properties panel: inline on desktop, mobile bottom-sheet driven by
+           `isMobileVisible` so it actually opens on <768px screens. -->
+      <app-properties-panel
+        *ngIf="showPropertiesPanel"
+        [activeTool]="activeTool"
+        [isMobileVisible]="showPropertiesPanel && isMobile"
+        (closeMobile)="onCloseProperties()"
+        (filterApplied)="onFilterApplied($event)"
+        (colorChanged)="onColorChanged($event)"
+        (widthChanged)="onWidthChanged($event)"
+        (applyCrop)="onApplyCrop()"
+        (cancelCrop)="onCancelCrop()"
+        (rotate)="onRotate($event)"
+        (shapeChanged)="onShapeChanged($event)">
+      </app-properties-panel>
+
+      <!-- AI generation panel -->
+      <app-ai-generation-panel
+        *ngIf="showAiPanel"
+        [canvasImageProvider]="getCanvasImage"
+        [canvasHasImage]="canvasHasImage"
+        (imageSelected)="onAiImageSelected($event)">
+      </app-ai-generation-panel>
+    </aside>
+  </main>
+</div>

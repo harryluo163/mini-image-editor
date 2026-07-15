@@ -1,0 +1,72 @@
+@import './styles/creaition-theme';
+
+// TUI Image Editor Overrides
+.tui-image-editor-container {
+  font-family: var(--creaition-font-primary) !important;
+  background-color: var(--creaition-background) !important;
+
+  .tui-image-editor-header {
+    display: none !important;
+  }
+
+  .tui-image-editor-main {
+    top: 0 !important;
+  }
+
+  .tui-image-editor-canvas-container {
+    border-radius: var(--creaition-radius-card);
+  }
+}
+
+// Global Reset
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+// ── Mobile Touch Optimizations ──────────────────────────────────────────────
+
+// Prevent pull-to-refresh and overscroll bounce on mobile
+html {
+  overscroll-behavior: none;
+}
+
+body {
+  // Prevent text selection on touch-hold for UI elements (not inputs)
+  -webkit-user-select: none;
+  user-select: none;
+  // Prevent callout/long-press menus on buttons
+  -webkit-touch-callout: none;
+  // Enable smooth scrolling for inertia
+  -webkit-overflow-scrolling: touch;
+}
+
+// Re-enable text selection for actual content areas
+input, textarea, [contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+// Remove tap highlight on mobile (WebKit)
+a, button, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+// Prevent iOS zoom on input focus by ensuring font-size >= 16px
+@media (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+// Safe-area padding utility classes
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}

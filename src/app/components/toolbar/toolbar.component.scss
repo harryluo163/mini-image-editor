@@ -1,0 +1,119 @@
+@import '../../../styles/breakpoints';
+
+:host {
+  display: block;
+}
+
+.toolbar {
+  background-color: var(--creaition-white);
+  border-radius: var(--creaition-radius-card);
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  @media (max-width: $breakpoint-md) {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  &__tools {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    @media (max-width: $breakpoint-md) {
+      display: none;
+
+      &--open {
+        display: flex;
+      }
+    }
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--creaition-secondary-grey);
+    font-variation-settings: 'wght' var(--creaition-weight-semibold), 'slnt' 0;
+    letter-spacing: 0.08em;
+    padding: 0 4px;
+  }
+
+  // Buttons stack vertically and fill the section width so every pill lines
+  // up to the same edge — the source of the tidy "column of tabs" feel.
+  &__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .creaition-btn {
+      width: 100%;
+      justify-content: flex-start;
+      padding: 0 16px;
+      gap: 12px;
+    }
+  }
+
+  &__divider {
+    height: 1px;
+    background-color: var(--creaition-primary-grey);
+    margin: 2px 0;
+  }
+}
+
+.mobile-toggle {
+  display: none;
+
+  @media (max-width: $breakpoint-md) {
+    display: flex;
+    align-self: flex-start;
+  }
+}
+
+// Fixed-width icon slot keeps every label at the same horizontal position
+// regardless of the underlying emoji's intrinsic width.
+.tool-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  font-size: 15px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.tool-label {
+  font-size: 13px;
+  font-variation-settings: 'wght' var(--creaition-weight-medium), 'slnt' 0;
+  flex: 1 1 auto;
+  text-align: left;
+
+  // At very narrow sidebar widths (≥md, <lg) keep only the icon column so
+  // the toolbar doesn't clip labels mid-word.
+  @media (max-width: $breakpoint-lg) and (min-width: $breakpoint-md) {
+    display: none;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    display: inline;
+    font-size: 13px;
+  }
+}
+
+// When labels are hidden (md-lg range) center the icon so the button reads
+// as a symmetrical pill instead of a left-heavy shape.
+@media (max-width: $breakpoint-lg) and (min-width: $breakpoint-md) {
+  .toolbar__buttons .creaition-btn {
+    justify-content: center;
+    padding: 0;
+    gap: 0;
+  }
+}

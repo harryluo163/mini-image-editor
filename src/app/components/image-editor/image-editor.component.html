@@ -1,0 +1,16 @@
+<div class="editor-wrapper">
+  <div #editorContainer class="editor-canvas"></div>
+
+  <!-- AI generation overlay. Sits on top of the canvas so the user can see
+       something is happening without our clobbering the underlying image. -->
+  <div *ngIf="isGenerating" class="loading-overlay" role="status" aria-live="polite">
+    <div class="loading-overlay__spinner" aria-hidden="true"></div>
+    <div class="loading-overlay__label">{{ i18n.t('editor.generating') }}</div>
+    <button
+      type="button"
+      class="loading-overlay__cancel"
+      (click)="cancelGeneration.emit()">
+      {{ i18n.t('editor.cancel') }}
+    </button>
+  </div>
+</div>
